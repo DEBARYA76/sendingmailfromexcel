@@ -3,12 +3,29 @@ package com.fellowcoders.model;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 
+import org.apache.poi.hssf.usermodel.HSSFDateUtil;
+import org.apache.poi.ss.usermodel.CellType;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.util.Calendar;
+
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFCreationHelper;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+
+
+
 
 public class FetchData {
 	public String path;
@@ -52,45 +69,44 @@ public class FetchData {
 	// returns the data from a cell
 	@SuppressWarnings("deprecation")
 	public String getCellData(String sheetName, String colName, int rowNum) {
-		//try {
-		if (rowNum <= 0)
-			return "";
+		try {
+			if (rowNum <= 0)
+				return "";
 
-		int index = workbook.getSheetIndex(sheetName);
-		int col_Num = -1;
-		if (index == -1)
-			return "";
+			int index = workbook.getSheetIndex(sheetName);
+			int col_Num = -1;
+			if (index == -1)
+				return "";
 
-		sheet = workbook.getSheetAt(index);
-		row = sheet.getRow(0);
-		for (int i = 0; i < row.getLastCellNum(); i++) {
-			// System.out.println(row.getCell(i).getStringCellValue().trim());
-			if (row.getCell(i).getStringCellValue().trim().equals(colName.trim()))
-				col_Num = i;
-		}
-		if (col_Num == -1)
-			return "";
+			sheet = workbook.getSheetAt(index);
+			row = sheet.getRow(0);
+			for (int i = 0; i < row.getLastCellNum(); i++) {
+				// System.out.println(row.getCell(i).getStringCellValue().trim());
+				if (row.getCell(i).getStringCellValue().trim().equals(colName.trim()))
+					col_Num = i;
+			}
+			if (col_Num == -1)
+				return "";
 
-		sheet = workbook.getSheetAt(index);
-		row = sheet.getRow(rowNum - 1);
-		if (row == null)
-			return "";
-		cell = row.getCell(col_Num);
+			sheet = workbook.getSheetAt(index);
+			row = sheet.getRow(rowNum - 1);
+			if (row == null)
+				return "";
+			cell = row.getCell(col_Num);
 
-		if (cell == null)
-			return "";
-		return null;
+			if (cell == null)
+				return "";
 
-		//System.out.println(cell.getCellType().name());
-		//
-		/*if (cell.getCellType() == "SE")//TODO
-				return cell.getStringCellValue();*/ //TO DO
+			//System.out.println(cell.getCellType().name());
+			//
+			if (cell.getCellType() == CellType.STRING)
+				return cell.getStringCellValue();
 
-		// if (cell.getCellType().STRING != null)
+			// if (cell.getCellType().STRING != null)
 
-		// if(cell.getCellType()==Xls_Reader.CELL_TYPE_STRING)
-		// return cell.getStringCellValue();
-		/*	else if ((cell.getCellType() == Cell.CELL_TYPE_NUMERIC) || (cell.getCellType() == Cell.CELL_TYPE_FORMULA)) {
+			// if(cell.getCellType()==Xls_Reader.CELL_TYPE_STRING)
+			// return cell.getStringCellValue();
+			else if ((cell.getCellType() == CellType.NUMERIC) || (cell.getCellType() == CellType.FORMULA)) {
 
 				String cellText = String.valueOf(cell.getNumericCellValue());
 				if (HSSFDateUtil.isCellDateFormatted(cell)) {
@@ -103,11 +119,10 @@ public class FetchData {
 					cellText = cal.get(Calendar.DAY_OF_MONTH) + "/" + cal.get(Calendar.MONTH) + 1 + "/" + cellText;
 
 					// System.out.println(cellText);
-
-				}
+			}
 
 				return cellText;
-			} else if (cell.getCellType() == Cell.CELL_TYPE_BLANK)
+			} else if (cell.getCellType() == CellType.BLANK)
 				return "";
 			else
 				return String.valueOf(cell.getBooleanCellValue());
@@ -116,39 +131,37 @@ public class FetchData {
 
 			e.printStackTrace();
 			return "row " + rowNum + " or column " + colName + " does not exist in xls";
-		}*/// TODO
-
+		}
 	}
 
 
 	// returns the data from a cell
 	public String getCellData(String sheetName, int colNum, int rowNum) {
-		//try {
-		if (rowNum <= 0)
-			return "";
+		try {
+			if (rowNum <= 0)
+				return "";
 
-		int index = workbook.getSheetIndex(sheetName);
+			int index = workbook.getSheetIndex(sheetName);
 
-		if (index == -1)
-			return "";
+			if (index == -1)
+				return "";
 
-		sheet = workbook.getSheetAt(index);
-		row = sheet.getRow(rowNum - 1);
-		if (row == null)
-			return "";
-		cell = row.getCell(colNum);
-		if (cell == null)
-			return "";
+			sheet = workbook.getSheetAt(index);
+			row = sheet.getRow(rowNum - 1);
+			if (row == null)
+				return "";
+			cell = row.getCell(colNum);
+			if (cell == null)
+				return "";
 
-		return null;
-		//
-		/*if (cell.getCellType() == Cell.CELL_TYPE_STRING)
+			//
+			if (cell.getCellType() == CellType.STRING)
 				return cell.getStringCellValue();
 
 			//
 			// if (cell.getCellType().STRING != null)
 			// return cell.getStringCellValue();
-			else if ((cell.getCellType() == Cell.CELL_TYPE_NUMERIC) || (cell.getCellType() == Cell.CELL_TYPE_FORMULA)) {
+			else if ((cell.getCellType() == CellType.NUMERIC) || (cell.getCellType() == CellType.FORMULA)) {
 
 				String cellText = String.valueOf(cell.getNumericCellValue());
 				if (HSSFDateUtil.isCellDateFormatted(cell)) {
@@ -165,7 +178,7 @@ public class FetchData {
 				}
 
 				return cellText;
-			} else if (cell.getCellType() == Cell.CELL_TYPE_BLANK)
+			} else if (cell.getCellType() == CellType.BLANK)
 				return "";
 			else
 				return String.valueOf(cell.getBooleanCellValue());
@@ -173,7 +186,7 @@ public class FetchData {
 
 			e.printStackTrace();
 			return "row " + rowNum + " or column " + colNum + " does not exist  in xls";
-		}*/ // todo	
+		}
 	}
 
 	// returns true if data is set successfully else false

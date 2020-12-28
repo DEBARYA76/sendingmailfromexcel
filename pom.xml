@@ -6,10 +6,10 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.fellowcoders</groupId>
-	<artifactId>sendingmailforxcell</artifactId>
+	<artifactId>sendingmailfromexcel</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 
-	<name>sendingmailforxcell</name>
+	<name>sendingmailfromexcel</name>
 	<!-- FIXME change it to the project's website -->
 	<url>http://www.example.com</url>
 
@@ -20,7 +20,10 @@
 	</properties>
 
 	<dependencies>
-		
+ 
+
+  
+    
 <dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
@@ -121,7 +124,6 @@
 <version>2.6.1</version>
 
 </dependency>
-
 
 
 	</dependencies>

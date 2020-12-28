@@ -16,7 +16,7 @@ import javax.mail.internet.MimeMultipart;
 public class SendingMail
 {
 
-    public void sendmail() {
+    public static void main(String[] args) {
     	
     	
    
@@ -42,6 +42,7 @@ public class SendingMail
      	}
     	
     	StringBuffer header = new StringBuffer();
+    	
     	header.append("<tr>");
 
          for (int j = 0 ; j < studentColumnCount ; j++) {
@@ -70,9 +71,7 @@ public class SendingMail
     		if ("Yes".equalsIgnoreCase(fetchDataObj.getCellData("STUDENT_DETAILS","MAIL_SENT_FLAG" , i))) {
     			continue;
     		}
-    		sb.append("<html>");
-
-    		sb.append("<table>");
+    	
     		sb.append(header.toString());
 			sb.append("<tr>");
 
@@ -87,6 +86,8 @@ public class SendingMail
     		
     		}
     		String toMailId = fetchDataObj.getCellData("STUDENT_DETAILS","EMAIL" , i);
+    		String name = fetchDataObj.getCellData("STUDENT_DETAILS","NAME" , i);
+
     		int rowNum = fetchDataObj.getCellRowNum("COURSE_DETAILS","COURSE_CODE" , fetchDataObj.getCellData("STUDENT_DETAILS","COURSE_CODE" , i));
     		if (i == 1){
         		rowNum ++;
@@ -99,10 +100,9 @@ public class SendingMail
 
 			}
 			sb.append("</tr>");
-			sb.append("</table>");
-			sb.append("</html>");
+		
 			if (i != 1) {
-				  boolean mailSendSuccessfully = sendMail(toMailId, sb.toString());
+				  boolean mailSendSuccessfully = sendMail(toMailId,name, sb.toString());
 				    if (mailSendSuccessfully) {
 			    		boolean flagUpdated = fetchDataObj.setCellData("STUDENT_DETAILS", "MAIL_SENT_FLAG", i, "Yes");
 				    }
@@ -117,79 +117,112 @@ public class SendingMail
     	
     }
     
-    
-    public static boolean sendMail(String toMailId, String messageTable){
-    	 // Recipient's email ID needs to be mentioned.
-    	
-    	boolean mailSentSuccessfully = false;
-        String to = toMailId;
-
-        // Sender's email ID needs to be mentioned
-        String from = "debaryapal11@gmail.com";
-
-        // Assuming you are sending email from through gmails smtp
-        String host = "172.16.113.70";
-
-        // Get system properties
-        Properties properties = System.getProperties();
-
-        // Setup mail server
-        properties.put("mail.smtp.host", host);
-        properties.put("mail.smtp.port", "25");
-      //  properties.put("mail.smtp.port", "465");
-      //  properties.put("mail.smtp.ssl.enable", "true");
-       // properties.put("mail.smtp.auth", "true");
-
-        
-        
-        
-        
+    public static boolean sendMail(String toMailId,String name, String messageTable ){
+        // Recipient's email ID needs to be mentioned.
        
-        
-        
-        // Get the Session object.// and pass username and password
-        Session session = Session.getDefaultInstance(properties);
+        boolean mailSentSuccessfully = false;
+            String to = toMailId;
 
-        // Used to debug SMTP issues
-        session.setDebug(true);
+            // Sender's email ID needs to be mentioned
+            final String from = "debaryapal11@gmail.com";
 
-        try {
-            // Create a default MimeMessage object.
-            MimeMessage message = new MimeMessage(session);
+            // Assuming you are sending email from through gmails smtp
+            String host = "smtp.gmail.com";
 
-            // Set From: header field of the header.
-            message.setFrom(new InternetAddress(from));
+            // Get system properties
+            Properties properties = new Properties();    
 
-            // Set To: header field of the header.
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+            // Setup mail server
+            properties.put("mail.smtp.host", host);
+            properties.put("mail.smtp.port", "587");
+           
+            properties.put("mail.smtp.socketFactory.port", "465");    
+            properties.put("mail.smtp.socketFactory.class",    
+                      "javax.net.ssl.SSLSocketFactory");    
+            properties.put("mail.smtp.auth", "true");    
+          //  properties.put("mail.smtp.port", "465");
+          //  properties.put("mail.smtp.ssl.enable", "true");
+           // properties.put("mail.smtp.auth", "true");
 
-            // Set Subject: header field
-            message.setSubject("Student Course Enrollment");
+           
+           
+           
+           
+           
+           
+           
+            // Get the Session object.// and pass username and password
+           // Session session = Session.getDefaultInstance(properties);
 
-            MimeBodyPart messageBodyPart = new MimeBodyPart();
-            MimeMultipart multipart = new MimeMultipart();
-			messageBodyPart = new MimeBodyPart();
-			StringBuffer messagebody = new StringBuffer();
-			messagebody.append("Please find enrollment details");
-			messagebody.append("\n");
-			messagebody.append(messageTable);
-			messageBodyPart.setContent(messagebody.toString(), "text/html");
-			multipart.addBodyPart(messageBodyPart);
-            // Now set the actual message
-            message.setContent(multipart);
+            Session session = Session.getDefaultInstance(properties,    
+                    new javax.mail.Authenticator() {    
+                    protected javax.mail.PasswordAuthentication getPasswordAuthentication() {    
+                    return new javax.mail.PasswordAuthentication(from,"deb1arya@76");  
+                    }    
+                   });    
+            // Used to debug SMTP issues
+            session.setDebug(true);
 
-            System.out.println("sending...");
-            // Send message
-            Transport.send(message);
-            System.out.println("Sent message successfully....");
-            mailSentSuccessfully = true;
-        } catch (MessagingException mex) {
-            mex.printStackTrace();
-            mailSentSuccessfully = false;
+            try {
+            	// Create a default MimeMessage object.
+            	MimeMessage message = new MimeMessage(session);
+
+            	// Set From: header field of the header.
+            	message.setFrom(new InternetAddress(from));
+
+            	// Set To: header field of the header.
+            	message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+
+            	// Set Subject: header field
+            	message.setSubject("Student Course Enrollment");
+
+            	MimeBodyPart messageBodyPart = new MimeBodyPart();
+            	MimeMultipart multipart = new MimeMultipart();
+            	messageBodyPart = new MimeBodyPart();
+            	StringBuffer messagebody = new StringBuffer();
+            	messagebody.append("Hi "+ name + ",");
+            	messagebody.append("\n");
+            	messagebody.append("We are delighted to inform you that you are successfully enrolled with us for the Crack Job Batch 1 (CJB1). Please find your details below:\r\n");
+            	messagebody.append("\n");
+            	messagebody.append("<html>");
+            	messagebody.append("<table>");
+
+            	messagebody.append(messageTable);
+            	messagebody.append("\n");
+
+            	messagebody.append("</table>");
+
+            	messagebody.append("</html>");
+            	messagebody.append("Thank you for joining us and trusting our services. Please reply back for any queries or changes in your details.\r\n");
+            	messagebody.append("Regards\r\n CrackjobTeam\r\nDigital Education Foundation\r\ncontact:8910274229\n");
+            	
+
+
+
+            	messageBodyPart.setContent(messagebody.toString(), "text/html");
+            	multipart.addBodyPart(messageBodyPart);
+            	// Now set the actual message
+            	message.setContent(multipart);
+
+            	System.out.println("sending...");
+            	// Send message
+            	Transport.send(message);
+                System.out.println("Sent message successfully....");
+                mailSentSuccessfully = true;
+            } catch (MessagingException mex) {
+                mex.printStackTrace();
+                mailSentSuccessfully = false;
+
+            }
+    return mailSentSuccessfully;
 
         }
-		return mailSentSuccessfully;
 
-    }
+
+
 
 }
+
+
+
+
