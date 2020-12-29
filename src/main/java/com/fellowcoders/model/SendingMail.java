@@ -16,7 +16,7 @@ import javax.mail.internet.MimeMultipart;
 public class SendingMail
 {
 
-    public static void main(String[] args) {
+   /* public void sendemail() {
     	
     	
    
@@ -115,10 +115,12 @@ public class SendingMail
 	
 
     	
-    }
+    }*/
     
-    public static boolean sendMail(String toMailId,String name, String messageTable ){
+    public static boolean sendMail(String toMailId,String name, int stu_slno, int courseRowCount ,
+	    	int studentRowCount, int courseColumnCount ,int	 studentColumnCount  ){
         // Recipient's email ID needs to be mentioned.
+    	FetchData fetchDataObj1 = new FetchData("E:\\ECLIPSE IDE\\sendingmailforxcell\\EXCELLFILE\\STUDENTS &COURSE DETAILS FOR CRACKJOB.xlsx");
        
         boolean mailSentSuccessfully = false;
             String to = toMailId;
@@ -180,19 +182,49 @@ public class SendingMail
             	MimeMultipart multipart = new MimeMultipart();
             	messageBodyPart = new MimeBodyPart();
             	StringBuffer messagebody = new StringBuffer();
-            	messagebody.append("Hi "+ name + ",");
+            	messagebody.append("Hi "+ name + ", \n");
             	messagebody.append("\n");
             	messagebody.append("We are delighted to inform you that you are successfully enrolled with us for the Crack Job Batch 1 (CJB1). Please find your details below:\r\n");
             	messagebody.append("\n");
-            	messagebody.append("<html>");
-            	messagebody.append("<table>");
+            	//messagebody.append("<html>");
+            	//messagebody.append("<table>");
 
-            	messagebody.append(messageTable);
+            	//messagebody.append(messageTable);
+            	//messagebody.append("\n");
+
+            	//messagebody.append("</table>");
+
+            	//messagebody.append("</html>");
+            	String id_no;
+            	if( stu_slno<=9)
+            	id_no="CJ00"+ stu_slno;
+            	else if( stu_slno>10 &&  stu_slno<=99)
+            	id_no="CJ0"+ stu_slno;
+            	else
+            		id_no="CJ"+ stu_slno;
+            	fetchDataObj1.setCellData("STUDENT_DETAILS", "STUDENT_ID",stu_slno,id_no);
+            	messagebody.append("Student ID NUMBER:  "+ id_no);
             	messagebody.append("\n");
-
-            	messagebody.append("</table>");
-
-            	messagebody.append("</html>");
+            	int rowNum = fetchDataObj1.getCellRowNum("COURSE_DETAILS","COURSE_CODE" , fetchDataObj1.getCellData("STUDENT_DETAILS","COURSE_CODE" , stu_slno));
+        		
+    			//for (int m =0 ; m <courseColumnCount; m++) {
+        			
+        		//	fetchDataObj1.getCellData("COURSE_DETAILS",m , rowNum);
+        		
+               
+            	
+            	messagebody.append("COURSE START DATE:  "+fetchDataObj1.getCellData("COURSE_DETAILS","START DATE" , rowNum));
+            	messagebody.append("\n");
+            	messagebody.append("COURSE END DATE:    "+fetchDataObj1.getCellData("COURSE_DETAILS","END DATE" , rowNum));
+            	messagebody.append("\n");
+            	messagebody.append("COURSE DURATION:     "+fetchDataObj1.getCellData("COURSE_DETAILS","DURATION" , rowNum));
+            	messagebody.append("\n");
+            	messagebody.append("COURSE PROVIDE:      "+fetchDataObj1.getCellData("COURSE_DETAILS","COURSE_DETAILS" , rowNum));
+            	messagebody.append("\n");
+            	
+            	String Ref_code=fetchDataObj1.getCellData("STUDENT_DETAILS","Last_Name" , stu_slno)+fetchDataObj1.getCellData("STUDENT_DETAILS","NAME" , stu_slno).charAt(0)+"@"+fetchDataObj1.getCellData("STUDENT_DETAILS","CONTACT _NUMBER" , stu_slno);
+            	fetchDataObj1.setCellData("STUDENT_DETAILS", "REF_CODE",stu_slno,Ref_code);
+            	messagebody.append("REFERAL CODE :     "+Ref_code);
             	messagebody.append("Thank you for joining us and trusting our services. Please reply back for any queries or changes in your details.\r\n");
             	messagebody.append("Regards\r\n CrackjobTeam\r\nDigital Education Foundation\r\ncontact:8910274229\n");
             	
